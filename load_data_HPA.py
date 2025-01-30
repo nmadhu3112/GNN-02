@@ -41,6 +41,7 @@ def get_gene_pics(gene, tissue_list=four_tissue_list):
                 pics.extend([l.strip("\n") for l in f.readlines()])
     return pics
 
+#Reads gene names from a text file. Returns a list of genes
 def get_enhanced_gene(gene_file):
     genes=[]
     # gene_file = 'enhanced_gene.txt'
@@ -50,12 +51,13 @@ def get_enhanced_gene(gene_file):
             genes.append(gene)
     return genes
 
+# Retrieves genes marked as enhanced.
 def get_enhanced_gene_list():
     '''some gene marked as enhanced but do not have enhanced label'''
     return [x for x in os.listdir(c.DATA_DIR)
             if len(os.listdir(os.path.join(c.DATA_DIR, x)))]
 
-
+# Retrieve gene lists from SUPP_DATA_DIR and APPROVE_DATA_DIR
 def get_supported_gene_list():
     return [x for x in os.listdir(c.SUPP_DATA_DIR)
             if len(os.listdir(os.path.join(c.SUPP_DATA_DIR, x)))]
@@ -65,6 +67,7 @@ def get_approved_gene_list():
     return [x for x in os.listdir(c.APPROVE_DATA_DIR)
             if len(os.listdir(os.path.join(c.APPROVE_DATA_DIR, x)))]
 
+# Combines enhanced, supported, and approved gene lists based on size.
 def get_gene_list(size=1):
     '''not consider train/val/test'''
     gene_list = []
@@ -80,6 +83,8 @@ def get_gene_list(size=1):
 def load_enhanced_label():
     return _load_label_from_file("enhanced_label.txt")
 
+# Reads a file containing gene labels. Maps each gene to a list of numerical labels using label_map
+# here label is the sub cellular location 
 def _load_label_from_file(label_file):
     d = {}
     # pardir = os.path.join(os.path.dirname(__file__), os.pardir)
@@ -93,6 +98,7 @@ def _load_label_from_file(label_file):
                 d[gene] = labels
     return d
 
+
 def read_graphfile(datadir, dataname, adj_method, max_nodes=None):
     ''' Read data from https://ls11-www.cs.tu-dortmund.de/staff/morris/graphkerneldatasets
         graph index starts with 1 in file
@@ -101,12 +107,14 @@ def read_graphfile(datadir, dataname, adj_method, max_nodes=None):
         List of networkx objects with graph and node labels
     '''
     # prefix = os.path.join(datadir,dataname, "enhanced_gene.txt")
+    # Loads gene names from "enhanced_gene.txt"
     prefix = os.path.join(datadir,'HPA', "enhanced_gene.txt")
-    Gene = get_enhanced_gene(prefix)
+    Gene = get_enhanced_gene(prefix) # makes a list
     print(len(Gene))
 
     # save_path = 'data/HPA/'+'res18_128' 
     # adj_method = 'dist' #dist, dist3,dist01(disttance after one threshold), simmilarity, dist_umap, minkowski
+    # Loads adjacency matrix, graph indicators, graph labels, and node features.
     save_path = 'data/HPA/Adjacent/'+'res18_128_'+ adj_method
     filename_adj_weight = save_path + '_A.npy'
     filename_graph_indic = save_path +'_graph_indicator.npy'
@@ -127,7 +135,7 @@ def read_graphfile(datadir, dataname, adj_method, max_nodes=None):
     per_proein_img_number=per_proein_img_number.tolist()
 
     print(len(adj_weight_list)) # graph number
-    print(len(per_proein_img_number)) # graph number
+    print(len(per_proein_img_number)) # Number of images per protein.
     print(len(graph_indicator)) #node number
     print(len(graph_labels)) # graph number
     print(len(fv_img)) # node number
@@ -148,11 +156,15 @@ def read_graphfile(datadir, dataname, adj_method, max_nodes=None):
 
     # Ajacent matrix
     start=0
+
+
+    # ?????????
     # node and graph start from 1
     adj_list={i:[] for i in range(1,len(graph_labels)+1)} 
     for j in range(len(adj_weight_list)):
         adj_weight_i = adj_weight_list[j]
         # print(adj_weight_i)
+        
         adj_i=[]
         for colum in range(np.shape(adj_weight_i)[1]):
             for row in range(np.shape(adj_weight_i)[0]):
