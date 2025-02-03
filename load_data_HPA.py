@@ -32,7 +32,7 @@ label_map = {
 four_tissue_list = ['liver', 'breast', 'prostate', 'bladder']
 
 
-def get_gene_pics(gene, tissue_list=four_tissue_list):
+def get_gene(gene, tissue_list=four_tissue_list):
     pics = []
     for t in tissue_list:
         tp = os.path.join(c.TISSUE_DIR, t, "%s.txt" % gene)
